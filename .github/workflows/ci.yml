@@ -5,14 +5,18 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
@@ -42,5 +46,6 @@ jobs:
             При прохождении пайплайна возникла ошибка
             Репозиторий: ${{ github.repository }}
             Ветка: ${{ github.ref_name }}
+            Версия Python: ${{ matrix.python-version }}
             Автор: ${{ github.actor }}
             Посмотреть лог: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
